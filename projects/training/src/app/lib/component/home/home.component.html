@@ -1,2 +1,14 @@
 
 <ng-toast></ng-toast>
+<div class="container">
+  <td>
+    <button (click)="viewSkills()" class="buttonSkills">Skills</button>
+  </td>
+  <div class="bottom-half-container">
+    <div *ngIf="showPopUpForm" class="ProjectDiv">
+      <app-Skills (popupChanged)="killSkills($event)"></app-Skills>
+    </div>
+  </div>
+
+</div>
+

@@ -1,0 +1,17 @@
+<div *ngIf="showAddSkillForm" class="add-skills-form">
+  <div class="form-overlay"></div>
+  <div class="form-container">
+    <div class="box">
+      <span class="close" (click)="hideAddSkillPopup()">&times;</span>
+      <form (submit)="createNewItem(form.value)" #form="ngForm">
+        <label for="name">Name:</label>
+        <input type="name" id="name" name="name" required ngModel>
+        <br>
+        <label for="lvl">Lvl:</label>
+        <input type="lvl" id="lvl" name="lvl" required ngModel>
+        <br>
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+  </div>
+  </div>

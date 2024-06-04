@@ -1,4 +1,4 @@
-name: Angular CI
+name: CI/CD Pipeline
 
 on:
   push:
@@ -11,39 +11,27 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    container:
+      image: node:18-buster-slim
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18.x'
+      - name: Install Chrome dependencies
+        run: |
+          apt-get update
+          apt-get install -y wget gnupg
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
+          sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          apt-get update
+          apt-get install -y google-chrome-stable
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-    
       - name: Install Angular CLI
         run: npm install -g @angular/cli
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build
-        run: npm run build --if-present
-
-      - name: Run Unit Tests
-        run: ng test --watch=false --browsers=ChromeHeadless
-
-      - name: Upload Test Results
-        if: success() || failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: path/to/test-results
+      - name: Run unit tests
+        run: ng test --watch=false --browsers=ChromeHeadlessNoSandbox
